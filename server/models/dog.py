@@ -41,6 +41,37 @@ class Dog(BaseModel):
             return self.validate_string_length('Description', description, min_length=10, allow_none=True)
         return description
     
+    @validates('age')
+    def validate_age(self, key, age):
+        """
+        Validate dog age to ensure it's between 0 and 20 years.
+        
+        Args:
+            key: The field name being validated
+            age: The age value to validate
+            
+        Returns:
+            int: The validated age
+            
+        Raises:
+            ValueError: If age is outside the valid range (0-20)
+        """
+        if age is not None:
+            # Check for boolean values first (they're technically int/float in Python)
+            if isinstance(age, bool):
+                raise ValueError("Age must be a number")
+            
+            if not isinstance(age, (int, float)):
+                raise ValueError("Age must be a number")
+            
+            if age < 0:
+                raise ValueError("Age cannot be negative")
+            
+            if age > 20:
+                raise ValueError("Age cannot be greater than 20 years")
+        
+        return age
+    
     def __repr__(self):
         return f'<Dog {self.name}, ID: {self.id}, Status: {self.status.value}>'
 
